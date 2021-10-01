@@ -3,6 +3,12 @@ pragma solidity ^0.8.0;
 contract Ballot{
     address[] public players;
     mapping(address=>uint256) public balances;
+    address public manager;
+
+    constructor () {
+        manager = msg.sender;
+    }
+
     
     function enterBallot() public payable{
         require(msg.value > 0.01 ether);
