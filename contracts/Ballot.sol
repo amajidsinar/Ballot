@@ -9,7 +9,6 @@ contract Ballot{
         manager = msg.sender;
     }
 
-    
     function enterBallot() public payable{
         require(msg.value > 0.01 ether);
         balances[msg.sender] += msg.value;
