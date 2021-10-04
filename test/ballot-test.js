@@ -1,21 +1,35 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const { providers } = require("ethers");
+const { ethers, waffle } = require("hardhat");
 
 
 describe("Ballot", function () {
-    it("Should return the new greeting", async function() {
-        const Ballot = await ethers.getContractFactory("Ballot")
-        const ballot = await Ballot.deploy()
-        await ballot.deployed()
-        const ballotAddress = ballot.address
-        // console.log(ballotAddress)
+    it("Check ballot basic functionality", async function() {
+        beforeEach(async function() {
+            const Ballot = await ethers.getContractFactory("Ballot")
+            const ballot = await Ballot.deploy()
+            await ballot.deployed()
+            
+            const provider = waffle.provider
+            const accounts = await ethers.getSigners()
+        })
+        it("check manager status", async function(){
+            var balanceManager = await provider.getBalance(accounts[0].address)
+            var balanceManager = ethers.utils.formatEther(balanceManager)
+            console.log(typeof(balanceManager))
+            // expect(balanceManager) 
+        })
+        
 
-        const accounts = await ethers.getSigners()
-        for (const account of accounts) {
-            console.log(account.address);
-        }
+        var balanceUser0 = await provider.getBalance(accounts[1].address)
+        var balanceUser0 = ethers.utils.formatEther(balanceUser0) 
+        
+           
+        
+        // var balance
 
 
+        console.log(balanceManager)
 
     });
     
