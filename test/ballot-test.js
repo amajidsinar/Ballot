@@ -3,7 +3,7 @@ const { providers } = require("ethers");
 const { ethers, waffle } = require("hardhat");
 
 
-describe("Ballot", function () {
+describe("Ballot", async() => {
     it("Check ballot basic functionality", async() => {
         const Ballot = await ethers.getContractFactory("Ballot")
         const ballot = await Ballot.deploy()
