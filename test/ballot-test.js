@@ -8,7 +8,8 @@ describe("Ballot", () => {
         this.signers = await ethers.getSigners()
         this.alice = this.signers[0]
         this.bob = this.signers[1]
-        this.carol = this.signers[2] 
+        this.carol = this.signers[2]
+        this.provider = waffle.provider 
     })
 
     beforeEach(async () => {
@@ -16,20 +17,24 @@ describe("Ballot", () => {
         await this.ballot.deployed()
     })
 
-    it("should have correct balance", async () => {
-        const provider = waffle.provider
-        var aliceBalance = await provider.getBalance(this.alice.address)
+    it("should have correct balance", async() => {
+        
+        var aliceBalance = await this.provider.getBalance(this.alice.address)
         var aliceBalance = ethers.utils.formatEther(aliceBalance)
         expect(aliceBalance).to.not.equal('10000.0')
 
-        var bobBalance = await provider.getBalance(this.bob.address)
+        var bobBalance = await this.provider.getBalance(this.bob.address)
         var bobBalance = ethers.utils.formatEther(bobBalance)
         expect(bobBalance).to.equal('10000.0')
 
-        var carolBalance = await provider.getBalance(this.carol.address)
+        var carolBalance = await this.provider.getBalance(this.carol.address)
         var carolBalance = ethers.utils.formatEther(carolBalance)
         expect(carolBalance).to.equal('10000.0')
     })
+
+    // it("test during enter", async() => {
+
+    // })
 
 })
 
