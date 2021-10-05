@@ -1,25 +1,35 @@
 const { expect } = require("chai");
 const { providers } = require("ethers");
-const { ethers, waffle } = require("hardhat");
+const { ethers, waffle} = require("hardhat");
 
+describe("Ballot", () => {
+    before(async () => {
+        this.Ballot = await ethers.getContractFactory("Ballot")
+        this.signers = await ethers.getSigners()
+        this.alice = this.signers[0]
+        this.bob = this.signers[1]
+        this.carol = this.signers[2]
+        this.provider = waffle.provider 
+    })
 
-describe("Ballot", async() => {
-    it("Check ballot basic functionality", async() => {
-        const Ballot = await ethers.getContractFactory("Ballot")
-        const ballot = await Ballot.deploy()
-        await ballot.deployed()
+    beforeEach(async () => {
+        this.ballot = await this.Ballot.deploy()
+        await this.ballot.deployed()
+    })
 
-        const provider = waffle.provider
-        const accounts = await ethers.getSigners()
+    it("should have correct balance", async() => {
+        var aliceBalance = await this.provider.getBalance(this.alice.address)
+        var aliceBalance = ethers.utils.formatEther(aliceBalance)
+        expect(aliceBalance).to.not.equal('10000.0')
 
-        var balanceManager = await provider.getBalance(accounts[0].address)
-        var balanceManager = ethers.utils.formatEther(balanceManager)
+        var bobBalance = await this.provider.getBalance(this.bob.address)
+        var bobBalance = ethers.utils.formatEther(bobBalance)
+        expect(bobBalance).to.equal('10000.0')
 
-        var balanceUser0 = await provider.getBalance(accounts[1].address)
-        var balanceUser0 = ethers.utils.formatEther(balanceUser0)
-        expect(balanceUser0).to.equal('10000.0')
-        expect(balanceManager).to.not.equal('10000.0')
-        })
-    });
-    
+        var carolBalance = await this.provider.getBalance(this.carol.address)
+        var carolBalance = ethers.utils.formatEther(carolBalance)
+        expect(carolBalance).to.equal('10000.0')
+    })
+
+})
 
