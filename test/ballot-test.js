@@ -18,7 +18,6 @@ describe("Ballot", () => {
     })
 
     it("should have correct balance", async() => {
-        
         var aliceBalance = await this.provider.getBalance(this.alice.address)
         var aliceBalance = ethers.utils.formatEther(aliceBalance)
         expect(aliceBalance).to.not.equal('10000.0')
@@ -31,10 +30,6 @@ describe("Ballot", () => {
         var carolBalance = ethers.utils.formatEther(carolBalance)
         expect(carolBalance).to.equal('10000.0')
     })
-
-    // it("test during enter", async() => {
-
-    // })
 
 })
 
