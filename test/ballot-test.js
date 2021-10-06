@@ -1,5 +1,4 @@
 const { expect } = require("chai");
-const { providers } = require("ethers");
 const { ethers, waffle} = require("hardhat");
 
 describe("Ballot", () => {
@@ -9,7 +8,7 @@ describe("Ballot", () => {
         this.alice = this.signers[0]
         this.bob = this.signers[1]
         this.carol = this.signers[2]
-        this.provider = waffle.provider 
+        this.provider = waffle.provider
     })
 
     beforeEach(async () => {
@@ -29,7 +28,14 @@ describe("Ballot", () => {
         var carolBalance = await this.provider.getBalance(this.carol.address)
         var carolBalance = ethers.utils.formatEther(carolBalance)
         expect(carolBalance).to.equal('10000.0')
+        
     })
 
-})
-
+    it("enter ballot", async() => {
+        const validAmount = ethers.utils.parseEther('0.5')
+        const invalidAmount = ethers.utils.parseEther('0.01')
+        
+        await this.ballot.connect(this.bob).enterBallot({value: validAmount})
+        await expect(this.ballot.connect(this.bob).enterBallot({value: invalidAmount})).to.be.revertedWith('BALLOT: Not enough ether in account')
+        })
+    })
