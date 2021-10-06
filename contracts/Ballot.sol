@@ -9,6 +9,11 @@ contract Ballot{
         manager = msg.sender;
     }
 
+    modifier restricted() {
+        require(msg.sender == manager, "only manager can execute this function");
+        _;
+    }
+
     function enterBallot() public payable{
         require(msg.value > 0.01 ether, "BALLOT: Not enough ether in account");
         balances[msg.sender] += msg.value;
@@ -18,16 +23,19 @@ contract Ballot{
         return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));
     }
     
-    function pickWinner() public view returns(address){
+    function pickWinner() public restricted{
         uint random_number = random() % players.length;
-        return players[random_number];
+        address winner =  players[random_number];
+        uint rewardAmount = address(this).balance;
+        payable(winner).transfer(rewardAmount); 
     }
-    function distributeReward(address payable winner) public {
+    
+    function distributeReward(address payable winner) public restricted{
         uint rewardAmount = address(this).balance;
         winner.transfer(rewardAmount);
     }
         
-    function resetBallot() public{
+    function resetBallot() restricted public{
         players = new address[](0);
     }
     
