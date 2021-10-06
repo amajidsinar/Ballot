@@ -36,6 +36,12 @@ describe("Ballot", () => {
         const invalidAmount = ethers.utils.parseEther('0.01')
         
         await this.ballot.connect(this.bob).enterBallot({value: validAmount})
-        await expect(this.ballot.connect(this.bob).enterBallot({value: invalidAmount})).to.be.revertedWith('BALLOT: Not enough ether in account')
+        await this.ballot.connect(this.carol).enterBallot({value: validAmount})
+        
+        await expect(this.ballot.connect(this.bob).enterBallot({value: invalidAmount})).to.be.revertedWith(
+            'BALLOT: Not enough ether in account')
+        await expect(this.ballot.connect(this.carol).enterBallot({value: invalidAmount})).to.be.revertedWith(
+            'BALLOT: Not enough ether in account')
+        
         })
     })
