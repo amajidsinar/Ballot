@@ -10,7 +10,7 @@ contract Ballot{
     }
 
     function enterBallot() public payable{
-        require(msg.value > 0.01 ether);
+        require(msg.value > 0.01 ether, "BALLOT: Not enough ether in account");
         balances[msg.sender] += msg.value;
         players.push(msg.sender);
     }
