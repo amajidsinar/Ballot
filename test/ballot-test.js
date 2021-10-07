@@ -1,6 +1,13 @@
 const { expect } = require("chai");
 const { ethers, waffle} = require("hardhat");
 
+
+async function calculateBalance(provider, address) {
+    var balance = await provider.getBalance(address)
+    var balance = ethers.utils.formatEther(balance)
+    return balance
+}
+
 describe("Ballot", () => {
     before(async () => {
         this.Ballot = await ethers.getContractFactory("Ballot")
@@ -17,16 +24,13 @@ describe("Ballot", () => {
     })
 
     it("should have correct initial balance", async() => {
-        var aliceBalance = await this.provider.getBalance(this.alice.address)
-        var aliceBalance = ethers.utils.formatEther(aliceBalance)
+        const aliceBalance = await calculateBalance(this.provider, this.alice.address)
         expect(aliceBalance).to.not.equal('10000.0')
 
-        var bobBalance = await this.provider.getBalance(this.bob.address)
-        var bobBalance = ethers.utils.formatEther(bobBalance)
+        const bobBalance = await calculateBalance(this.provider, this.bob.address)
         expect(bobBalance).to.equal('10000.0')
 
-        var carolBalance = await this.provider.getBalance(this.carol.address)
-        var carolBalance = ethers.utils.formatEther(carolBalance)
+        const carolBalance = await calculateBalance(this.provider, this.carol.address)
         expect(carolBalance).to.equal('10000.0')
         
     })
@@ -60,12 +64,9 @@ describe("Ballot", () => {
         var ballotBalance = await this.provider.getBalance(this.ballot.address)
         var ballotBalance = ethers.utils.formatEther(ballotBalance)
         expect(ballotBalance).to.equal('1.0')
-        
-
-        
-        
         })
-
+    
+    
     it("calculate at stake", async() => {
         const validAmount = ethers.utils.parseEther('0.5')
         
