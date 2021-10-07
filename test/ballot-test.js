@@ -66,6 +66,7 @@ describe("Ballot", () => {
         
         await this.ballot.connect(this.bob).enterBallot({value: validAmount})
         await this.ballot.connect(this.carol).enterBallot({value: validAmount})
+        
 
         var atStake = await this.ballot.getAtStake()
         var atStake = ethers.utils.formatEther(atStake)
@@ -87,11 +88,29 @@ describe("Ballot", () => {
         await expect(this.ballot.connect(this.carol).pickWinner()).to.be.revertedWith(
             'only manager can execute this function'
         )
-
         const winner = await this.ballot.connect(this.alice).pickWinner()
+
         const players = await this.ballot.getPlayers()
         expect(players.includes(winner)).to.be.true
+    })
+
+    it("reset ballot", async() => {
+        const validAmount = ethers.utils.parseEther('0.5')
         
+        await this.ballot.connect(this.bob).enterBallot({value: validAmount})
+        var players = await this.ballot.getPlayers()
+        expect(players).to.deep.equal([this.bob.address])
+
+        await this.ballot.connect(this.carol).enterBallot({value: validAmount})
+        var players = await this.ballot.getPlayers()
+        expect(players).to.deep.equal([this.bob.address, this.carol.address])
+
+        await this.ballot.connect(this.alice).resetBallot()
+        var players = await this.ballot.getPlayers()
+        expect(players).to.deep.equal([])
+        
+
+
     })
 
 
