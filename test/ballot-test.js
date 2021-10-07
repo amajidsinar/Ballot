@@ -16,7 +16,7 @@ describe("Ballot", () => {
         await this.ballot.deployed()
     })
 
-    it("should have correct balance", async() => {
+    it("should have correct initial balance", async() => {
         var aliceBalance = await this.provider.getBalance(this.alice.address)
         var aliceBalance = ethers.utils.formatEther(aliceBalance)
         expect(aliceBalance).to.not.equal('10000.0')
@@ -31,24 +31,38 @@ describe("Ballot", () => {
         
     })
 
-    it("enter ballot", async() => {
+    it("enter ballot with 2 users", async() => {
         const validAmount = ethers.utils.parseEther('0.5')
         const invalidAmount = ethers.utils.parseEther('0.01')
-        
-        await this.ballot.connect(this.bob).enterBallot({value: validAmount})
-        var bobBalance = await this.provider.getBalance(this.bob.address)
-        var bobBalance = ethers.utils.formatEther(bobBalance)
-        console.log(bobBalance)
-
-        await this.ballot.connect(this.carol).enterBallot({value: validAmount})
-        var carolBalance = await this.provider.getBalance(this.carol.address)
-        var carolBalance = ethers.utils.formatEther(carolBalance)
-        console.log(carolBalance)
 
         await expect(this.ballot.connect(this.bob).enterBallot({value: invalidAmount})).to.be.revertedWith(
             'BALLOT: Not enough ether in account')
+            
+        var ballotBalance = await this.provider.getBalance(this.ballot.address)
+        var ballotBalance = ethers.utils.formatEther(ballotBalance)
+        expect(ballotBalance).to.equal('0.0')
+
+
         await expect(this.ballot.connect(this.carol).enterBallot({value: invalidAmount})).to.be.revertedWith(
             'BALLOT: Not enough ether in account')
+
+        var ballotBalance = await this.provider.getBalance(this.ballot.address)
+        var ballotBalance = ethers.utils.formatEther(ballotBalance)
+        expect(ballotBalance).to.equal('0.0')
+        
+        await this.ballot.connect(this.bob).enterBallot({value: validAmount})
+        var ballotBalance = await this.provider.getBalance(this.ballot.address)
+        var ballotBalance = ethers.utils.formatEther(ballotBalance)
+        expect(ballotBalance).to.equal('0.5')
+
+
+        await this.ballot.connect(this.carol).enterBallot({value: validAmount})
+        var ballotBalance = await this.provider.getBalance(this.ballot.address)
+        var ballotBalance = ethers.utils.formatEther(ballotBalance)
+        expect(ballotBalance).to.equal('1.0')
+        
+
+        
         
         })
 
