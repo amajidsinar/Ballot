@@ -51,10 +51,13 @@ describe("Ballot", () => {
         await this.ballot.connect(this.bob).enterBallot({value: validAmount})
         var ballotBalance = await calculateBalance(this.provider, this.ballot.address)
         expect(ballotBalance).to.equal('0.5')
+        
 
         await this.ballot.connect(this.carol).enterBallot({value: validAmount})
         var ballotBalance = await calculateBalance(this.provider, this.ballot.address)
         expect(ballotBalance).to.equal('1.0')
+
+
         })
     
     
@@ -72,15 +75,24 @@ describe("Ballot", () => {
         expect(atStake).to.equal(ballotBalance)
     })
 
-    // it("pick winner", async() => {
-    //     const validAmount = ethers.utils.parseEther('0.5')
+    it("pick winner", async() => {
+        const validAmount = ethers.utils.parseEther('0.5')
         
-    //     await this.ballot.connect(this.bob).enterBallot({value: validAmount})
-    //     await this.ballot.connect(this.carol).enterBallot({value: validAmount})
+        await this.ballot.connect(this.bob).enterBallot({value: validAmount})
+        await this.ballot.connect(this.carol).enterBallot({value: validAmount})
 
-    //     await this.ballot.connect(this.alice)
+        await expect(this.ballot.connect(this.bob).pickWinner()).to.be.revertedWith(
+            'only manager can execute this function'
+        )
+        await expect(this.ballot.connect(this.carol).pickWinner()).to.be.revertedWith(
+            'only manager can execute this function'
+        )
+
+        const winner = await this.ballot.connect(this.alice).pickWinner()
+        const players = await this.ballot.getPlayers()
+        expect(players.includes(winner)).to.be.true
         
-    // })
+    })
 
 
 })

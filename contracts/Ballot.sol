@@ -4,6 +4,7 @@ contract Ballot{
     address[] public players;
     mapping(address=>uint256) public balances;
     address public manager;
+    uint256 money = 100;
 
     constructor () {
         manager = msg.sender;
@@ -23,11 +24,10 @@ contract Ballot{
         return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));
     }
     
-    function pickWinner() public restricted{
+    function pickWinner() public view restricted returns(address){
         uint random_number = random() % players.length;
         address winner =  players[random_number];
-        uint rewardAmount = address(this).balance;
-        payable(winner).transfer(rewardAmount); 
+        return winner;
     }
     
     function distributeReward(address payable winner) public restricted{
@@ -38,10 +38,14 @@ contract Ballot{
     function resetBallot() restricted public{
         players = new address[](0);
     }
-    
+
+    function getPlayers() public view returns(address[] memory){
+        return players;
+    }
     function getAtStake() public view returns(uint256){
         return address(this).balance;
     }
+    
     
 } 
     
